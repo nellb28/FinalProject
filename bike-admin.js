@@ -16,14 +16,13 @@
 const results = getbikeData();
 
 async function getbikeData() {
-  url = "http://api.citybik.es/v2/networks?fields=id,name,href";
+  url = "http://api.citybik.es/v2/networks";
   const response = await fetch(url)
     .then(function (data) {
       return data.json();
     })
     .then(function (responseJson) {
       console.log(responseJson);
-
       generateBikeTable(responseJson);
     })
     .catch(() => {
@@ -76,20 +75,20 @@ function generateTableHeader() {
   bikeTable.appendChild(bikeRow);
   const bikeHeader1 = document.createElement("th");
   bikeTable.appendChild(bikeHeader1);
-  bikeHeader1.innerHTML = "Name";
+  bikeHeader1.innerHTML = " Company";
   const bikeHeader2 = document.createElement("th");
   bikeTable.appendChild(bikeHeader2);
-  bikeHeader2.innerHTML = "Bikes Available";
+  bikeHeader2.innerHTML = " Country";
   const bikeHeader3 = document.createElement("th");
   bikeTable.appendChild(bikeHeader3);
-  bikeHeader3.innerHTML = "Empty Slots";
+  bikeHeader3.innerHTML = " City";
 
   return bikeTable;
 }
 function generateBikeTable(responseJson) {
   const bikeTable = generateTableHeader();
-
-  for (let index = 0; index < 20; index++) {
+  const base = 310;
+  for (let index = base; index < base + 20; index++) {
     const bikeRow = document.createElement("tr");
     bikeTable.appendChild(bikeRow);
     const bikeTD1 = document.createElement("td");
@@ -103,13 +102,15 @@ function generateBikeTable(responseJson) {
     let city = responseJson.networks[index].location.city;
     let country = responseJson.networks[index].location.country;
 
-    console.log(responseJson);
-    console.log(company);
-    console.log(city);
-    console.log(country);
+    // console.log(responseJson);
+    // console.log(company);
+    // console.log(city);
+    // console.log(country);
 
-    bikeTD1.innerHTML = company;
-    bikeTD2.innerHTML = city;
-    bikeTD3.innerHTML = country;
+    //TODO fix spacing with padding
+
+    bikeTD1.innerHTML = " " + company;
+    bikeTD2.innerHTML = " " + country;
+    bikeTD3.innerHTML = " " + city;
   }
 }
