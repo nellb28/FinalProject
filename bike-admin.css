@@ -1,0 +1,16 @@
+img {
+  max-width: 300px;
+}
+
+body {
+  background-color: gray;
+}
+
+tr:nth-child(even) {
+  background-color: #d6eeee;
+}
+table,
+th,
+td {
+  border: 1px solid black;
+}
