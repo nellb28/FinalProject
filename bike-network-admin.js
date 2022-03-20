@@ -1,9 +1,16 @@
 const BASE_URI = "http://api.citybik.es";
-
-fetchNetworkDetails().then((network) => {
-  console.log(network); // fetched stations
-  generateNetworkDetailTable(network);
+//TODO - add error case
+fetchNetworks().then((networks) => {
+  console.log(networks); // fetched networks
+  generateNetworkTable(networks);
 });
+
+//TODO - add error case
+//TODO - add tests
+// fetchNetworkDetails("/v2/networks/divvy").then((network) => {
+//   console.log(network); // fetched network details
+//   generateNetworkDetailTable(network);
+// });
 
 async function fetchNetworks() {
   const response = await fetch(`${BASE_URI}/v2/networks`);
@@ -11,8 +18,8 @@ async function fetchNetworks() {
   return networks;
 }
 
-async function fetchNetworkDetails() {
-  const response = await fetch(`${BASE_URI}/v2/networks/divvy`);
+async function fetchNetworkDetails(route) {
+  const response = await fetch(`${BASE_URI}${route}`);
   const network = await response.json();
   return network;
 }
@@ -33,18 +40,18 @@ function generateNetworkDetailTableHeader() {
   networkDetailTable.appendChild(networkDetailRow);
   const networkHeader1 = document.createElement("th");
   networkDetailTable.appendChild(networkHeader1);
-  networkHeader1.innerHTML = " Company";
+  networkHeader1.innerHTML = " Location Name";
   const networkHeader2 = document.createElement("th");
   networkDetailTable.appendChild(networkHeader2);
-  networkHeader2.innerHTML = " Country";
+  networkHeader2.innerHTML = "Available Slots";
   const networkHeader3 = document.createElement("th");
   networkDetailTable.appendChild(networkHeader3);
-  networkHeader3.innerHTML = " City";
+  networkHeader3.innerHTML = " Available Ebikes";
 
   return networkDetailTable;
 }
 
-function generateTableHeader() {
+function generateNetworkTableHeader() {
   const networkContainer = document.getElementById("networks-container");
 
   if (document.getElementById("network-table")) {
@@ -67,12 +74,12 @@ function generateTableHeader() {
 
   return networkTable;
 }
-function generatenetworkTable(responseJson) {
-  const networkTable = generateTableHeader();
+function generateNetworkTable(responseJson) {
+  const networkTable = generateNetworkTableHeader();
   const base = 310;
-  for (let index = 0; index < base + 100; index++) {
-    const networkDetailRow = document.createElement("tr");
-    networkTable.appendChild(networkDetailRow);
+  for (let index = base; index < base + 20; index++) {
+    const networkRow = document.createElement("tr");
+    networkTable.appendChild(networkRow);
     const networkTD1 = document.createElement("td");
     networkRow.appendChild(networkTD1);
     const networkTD2 = document.createElement("td");
@@ -82,7 +89,8 @@ function generatenetworkTable(responseJson) {
 
     let company = responseJson.networks[index].company;
     let city = responseJson.networks[index].location.city;
-    let country = responseJson.networks[index].location.country;
+    //let country = responseJson.networks[index].location.country;
+    let country = responseJson.networks[index].href;
 
     networkTD1.innerHTML = " " + company;
     networkTD2.innerHTML = " " + country;
@@ -105,7 +113,7 @@ function generateNetworkDetailTable(responseJson) {
 
     let name = responseJson.network.stations[index].name;
     let emptySlots = responseJson.network.stations[index].empty_slots;
-    let eBikes = responseJson.network.stations[index].extra.eBikes;
+    let eBikes = responseJson.network.stations[index].extra.ebikes;
 
     networkDetailTD1.innerHTML = " " + name;
     networkDetailTD2.innerHTML = " " + emptySlots;
