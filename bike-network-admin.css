@@ -3,7 +3,7 @@ img {
 }
 
 body {
-  background-color: gray;
+  background-color: rgb(128, 126, 126);
 }
 
 tr:nth-child(even) {
@@ -13,4 +13,24 @@ table,
 th,
 td {
   border: 1px solid black;
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+div {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+a {
+  padding: 3px 6px;
+  border-radius: 5px;
+  font-size: 0.8em;
+  color: white;
+}
+
+.view-item {
+  background-color: lightgray;
 }
