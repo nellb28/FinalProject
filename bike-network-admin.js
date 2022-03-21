@@ -134,10 +134,19 @@ function generateNetworkDetailTable(responseJson) {
 
     let name = responseJson.network.stations[index].name;
     let emptySlots = responseJson.network.stations[index].empty_slots;
+    //TODO - need to add logic to check if certain columns exist
     let eBikes = responseJson.network.stations[index].extra.ebikes;
 
     networkDetailTD1.innerHTML = " " + name;
     networkDetailTD2.innerHTML = " " + emptySlots;
     networkDetailTD3.innerHTML = " " + eBikes;
+
+    //TODO - create function to handle extra fields
+    Object.keys(responseJson.network.stations[index].extra).forEach(function (
+      key
+    ) {
+      var value = responseJson.network.stations[index].extra[key];
+      console.log(key);
+    });
   }
 }
