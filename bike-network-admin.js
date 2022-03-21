@@ -1,16 +1,11 @@
+let currentNetwork;
 const BASE_URI = "http://api.citybik.es";
 //TODO - add error case
+//TODO - add tests
 fetchNetworks().then((networks) => {
   console.log(networks); // fetched networks
   generateNetworkTable(networks);
 });
-
-//TODO - add error case
-//TODO - add tests
-// fetchNetworkDetails("/v2/networks/divvy").then((network) => {
-//   console.log(network); // fetched network details
-//   generateNetworkDetailTable(network);
-// });
 
 async function fetchNetworks() {
   const response = await fetch(`${BASE_URI}/v2/networks`);
@@ -28,9 +23,7 @@ function generateNetworkDetailTableHeader() {
   const networkContainer = document.getElementById("networks-container");
 
   if (document.getElementById("network-table")) {
-    networkContainer.removeChild(
-      document.getElementById("network-section-table")
-    );
+    networkContainer.removeChild(document.getElementById("network-table"));
   }
   const networkDetailTable = document.createElement("table");
   networkDetailTable.setAttribute("id", "network-table");
@@ -74,10 +67,31 @@ function generateNetworkTableHeader() {
 
   return networkTable;
 }
+
+function clickViewNetworkDetail(event) {
+  currentNetwork = this.getAttribute("data-network");
+  console.log(event);
+  console.log(currentNetwork);
+  fetchNetworkDetails(currentNetwork).then((network) => {
+    console.log(network); // fetched network details
+    generateNetworkDetailTable(network);
+  });
+}
+
+const clickListItem = function (event) {
+  event.target.parentNode.classList.toggle("done");
+};
+
 function generateNetworkTable(responseJson) {
   const networkTable = generateNetworkTableHeader();
+
   const base = 310;
   for (let index = base; index < base + 20; index++) {
+    let company = responseJson.networks[index].company;
+    let city = responseJson.networks[index].location.city;
+    let country = responseJson.networks[index].location.country;
+    let network = responseJson.networks[index].href;
+
     const networkRow = document.createElement("tr");
     networkTable.appendChild(networkRow);
     const networkTD1 = document.createElement("td");
@@ -86,11 +100,16 @@ function generateNetworkTable(responseJson) {
     networkRow.appendChild(networkTD2);
     const networkTD3 = document.createElement("td");
     networkRow.appendChild(networkTD3);
-
-    let company = responseJson.networks[index].company;
-    let city = responseJson.networks[index].location.city;
-    //let country = responseJson.networks[index].location.country;
-    let country = responseJson.networks[index].href;
+    const networkTD4 = document.createElement("td");
+    networkRow.appendChild(networkTD4);
+    const div = document.createElement("div");
+    networkTD4.appendChild(div);
+    const viewButton = document.createElement("a");
+    viewButton.setAttribute("class", "view-item");
+    viewButton.setAttribute("data-network", network);
+    viewButton.innerText = "View";
+    div.appendChild(viewButton);
+    viewButton.addEventListener("click", clickViewNetworkDetail);
 
     networkTD1.innerHTML = " " + company;
     networkTD2.innerHTML = " " + country;
@@ -99,9 +118,11 @@ function generateNetworkTable(responseJson) {
 }
 
 function generateNetworkDetailTable(responseJson) {
+  console.log("generateNetworkDetailTable");
+  console.log(responseJson);
   const networkSectionTable = generateNetworkDetailTableHeader();
-  const base = 215;
-  for (let index = base; index < base + 10; index++) {
+
+  for (let index = 0; index < responseJson.network.stations.length; index++) {
     const networkDetailRow = document.createElement("tr");
     networkSectionTable.appendChild(networkDetailRow);
     const networkDetailTD1 = document.createElement("td");
