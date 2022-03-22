@@ -151,9 +151,6 @@ function generateNetworkDetailTable(responseJson) {
     if ("extra" in responseJson) {
       Object.values(responseJson.network.stations[index].extra).forEach(
         (value) => {
-          //for (let value of Object.values(
-          //  responseJson.network.stations[index].extra
-          //)) {
           let networkDetail4 = document.createElement("td");
           networkDetailRow.appendChild(networkDetail4);
           networkDetail4.innerHTML = value;
