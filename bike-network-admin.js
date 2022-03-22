@@ -19,12 +19,13 @@ async function fetchNetworkDetails(route) {
   return network;
 }
 
-function generateNetworkDetailTableHeader() {
+function generateNetworkDetailTableHeader(responseJson) {
   const networkContainer = document.getElementById("networks-container");
 
   if (document.getElementById("network-table")) {
     networkContainer.removeChild(document.getElementById("network-table"));
   }
+
   const networkDetailTable = document.createElement("table");
   networkDetailTable.setAttribute("id", "network-table");
 
@@ -39,8 +40,16 @@ function generateNetworkDetailTableHeader() {
   networkHeader2.innerHTML = "Available Slots";
   const networkHeader3 = document.createElement("th");
   networkDetailTable.appendChild(networkHeader3);
-  networkHeader3.innerHTML = " Available Ebikes";
+  networkHeader3.innerHTML = "Free Bikes";
 
+  //TODO - Refactor this function and create function to handle extra fields
+  if ("extra" in responseJson) {
+    Object.keys(responseJson.network.stations[0].extra).forEach((key) => {
+      let networkHeader4 = document.createElement("th");
+      networkDetailTable.appendChild(networkHeader4);
+      networkHeader4.innerHTML = key;
+    });
+  }
   return networkDetailTable;
 }
 
@@ -120,8 +129,7 @@ function generateNetworkTable(responseJson) {
 function generateNetworkDetailTable(responseJson) {
   console.log("generateNetworkDetailTable");
   console.log(responseJson);
-  const networkSectionTable = generateNetworkDetailTableHeader();
-
+  const networkSectionTable = generateNetworkDetailTableHeader(responseJson);
   for (let index = 0; index < responseJson.network.stations.length; index++) {
     const networkDetailRow = document.createElement("tr");
     networkSectionTable.appendChild(networkDetailRow);
@@ -134,19 +142,23 @@ function generateNetworkDetailTable(responseJson) {
 
     let name = responseJson.network.stations[index].name;
     let emptySlots = responseJson.network.stations[index].empty_slots;
-    //TODO - need to add logic to check if certain columns exist
-    let eBikes = responseJson.network.stations[index].extra.ebikes;
+    let free_bikes = responseJson.network.stations[index].free_bikes;
 
     networkDetailTD1.innerHTML = " " + name;
     networkDetailTD2.innerHTML = " " + emptySlots;
-    networkDetailTD3.innerHTML = " " + eBikes;
+    networkDetailTD3.innerHTML = " " + free_bikes;
 
-    //TODO - create function to handle extra fields
-    Object.keys(responseJson.network.stations[index].extra).forEach(function (
-      key
-    ) {
-      var value = responseJson.network.stations[index].extra[key];
-      console.log(key);
-    });
+    if ("extra" in responseJson) {
+      Object.values(responseJson.network.stations[index].extra).forEach(
+        (value) => {
+          //for (let value of Object.values(
+          //  responseJson.network.stations[index].extra
+          //)) {
+          let networkDetail4 = document.createElement("td");
+          networkDetailRow.appendChild(networkDetail4);
+          networkDetail4.innerHTML = value;
+        }
+      );
+    }
   }
 }
