@@ -59,6 +59,7 @@ function generateNetworkTableHeader() {
   if (document.getElementById("network-table")) {
     networkContainer.removeChild(document.getElementById("network-table"));
   }
+
   const networkTable = document.createElement("table");
   networkTable.setAttribute("id", "network-table");
   networkContainer.appendChild(networkTable);
@@ -119,6 +120,14 @@ function generateNetworkTable(responseJson) {
     viewButton.innerText = "View";
     div.appendChild(viewButton);
     viewButton.addEventListener("click", clickViewNetworkDetail);
+
+    //create method that checks if it's the view btn
+    networkRow.addEventListener("mouseover", (event) => {
+      event.target.parentNode.classList.toggle("cell-highlight");
+    });
+    networkRow.addEventListener("mouseout", (event) => {
+      event.target.parentNode.classList.toggle("cell-highlight");
+    });
 
     networkTD1.innerHTML = " " + company;
     networkTD2.innerHTML = " " + country;
