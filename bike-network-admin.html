@@ -11,7 +11,19 @@
     <link rel="stylesheet" href="bike-network-admin.css" />
   </head>
   <body>
-    <div class="col-md-7 offset-md-1" id="networks-container"></div>
+    <div>
+      <select id="country-select">
+        <option selected="selected" value="default">
+          --PLEASE SELECT COUNTRY--
+        </option>
+        <option value="BR">BR</option>
+        <option value="IT">IT</option>
+        <option value="AR">AR</option>
+        <option value="US">US</option>
+      </select>
+      <div class="col-md-7 offset-md-1" id="networks-container"></div>
+    </div>
+
     <script src="api-key.js"></script>
     <script src="bike-network-admin.js"></script>
   </body>

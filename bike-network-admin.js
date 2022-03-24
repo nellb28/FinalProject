@@ -2,9 +2,14 @@ let currentNetwork;
 const BASE_URI = "http://api.citybik.es";
 //TODO - add error case
 //TODO - add tests
-fetchNetworks().then((networks) => {
-  console.log(networks); // fetched networks
-  generateNetworkTable(networks);
+const listItem = document.getElementById("country-select");
+listItem.addEventListener("change", function () {
+  selection = this.value;
+  console.log("clicked " + selection);
+  fetchNetworks().then((networks) => {
+    console.log(networks); // fetched networks
+    generateNetworkTable(selection, networks);
+  });
 });
 
 async function fetchNetworks() {
@@ -92,8 +97,48 @@ const clickListItem = function (event) {
   event.target.parentNode.classList.toggle("done");
 };
 
-function generateNetworkTable(responseJson) {
+function generateNetworkTable(selection, responseJson) {
   const networkTable = generateNetworkTableHeader();
+
+  // console.log("***********FILTERED******************");
+  // // var result = responseJson.filter((obj) => {
+  // //   obj.id == "velobike-moscow";
+  // // });
+  // console.log(responseData);
+  // //for (let index = 0; index < responseData.networks.length; index++) {
+  // // console.log(
+  // //   Object.values(responseData.networks.location).filter(
+  // //     (d) => d.country == selection
+  // //   )
+  // // );
+
+  // responseData.networks.forEach((element) =>
+  //   console.log(element.location.country.filter((d) => d.country == selection))
+  // );
+  // );
+  //}
+
+  // console.log(
+  //   Object.values(responseJson.networks).filter(
+  //     (d) => d.id == "baerum-bysykkel"
+  //   )
+  // );
+
+  // if (selection) {
+  //   console.log(
+  //     Object.values(responseData.networks[0].location.country).filter(
+  //       (d) => d.country == selection
+  //     )
+  //   );
+  // }
+
+  //.filter(d => d.gender === 'female')
+  //function (item) {
+  //return item; //.networks.id == "velobike-moscow";
+  // })
+  //);
+  // console.log(result); // "id": "velobike-moscow",
+  //console.log("***********FILTERED******************");
 
   const base = 310;
   for (let index = base; index < base + 20; index++) {
