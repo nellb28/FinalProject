@@ -3,7 +3,7 @@ img {
 }
 
 body {
-  background-color: rgb(128, 126, 126);
+  background-color: lightgray;
 }
 
 .cell-highlight {
@@ -17,6 +17,12 @@ body {
 
 table {
   border-collapse: collapse;
+  border: 1px solid black;
+  text-align: center;
+  vertical-align: middle;
+}
+
+tr {
   border: 1px solid black;
   text-align: center;
   vertical-align: middle;
@@ -39,5 +45,5 @@ a {
 }
 
 .view-item {
-  background-color: lightgray;
+  background-color: lightgreen;
 }
