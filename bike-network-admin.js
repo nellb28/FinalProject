@@ -94,6 +94,18 @@ function clickViewNetworkDetail(event) {
   });
 }
 
+function clickViewMapDetail(event) {
+  let latitude = this.getAttribute("data-latitude");
+  let longitude = this.getAttribute("data-longitude");
+  console.log(latitude);
+  console.log(longitude);
+  //TODO - add google fetch
+  // fetchNetworkDetails(currentNetwork).then((network) => {
+  //   console.log(network); // fetched network details
+  //   generateNetworkDetailTable(network);
+  // });
+}
+
 const clickListItem = function (event) {
   event.target.parentNode.classList.toggle("done");
 };
@@ -160,6 +172,8 @@ function generateNetworkTable(selection, responseJson) {
     networkRow.appendChild(networkTD4);
     const div = document.createElement("div");
     networkTD4.appendChild(div);
+
+    //todo extract into function
     const viewButton = document.createElement("a");
     viewButton.setAttribute("class", "view-item");
     viewButton.setAttribute("data-network", network);
@@ -183,6 +197,7 @@ function generateNetworkTable(selection, responseJson) {
 
 function generateNetworkDetailTable(responseJson) {
   console.log("generateNetworkDetailTable");
+  console.log("HERE****");
   console.log(responseJson);
   const networkSectionTable = generateNetworkDetailTableHeader(responseJson);
   for (let index = 0; index < responseJson.network.stations.length; index++) {
@@ -194,6 +209,23 @@ function generateNetworkDetailTable(responseJson) {
     networkDetailRow.appendChild(networkDetailTD2);
     const networkDetailTD3 = document.createElement("td");
     networkDetailRow.appendChild(networkDetailTD3);
+    const div = document.createElement("div");
+    networkDetailRow.appendChild(div);
+
+    //todo extract into function
+    const viewButton = document.createElement("a");
+    viewButton.setAttribute("class", "view-item");
+    viewButton.setAttribute(
+      "data-latitude",
+      responseJson.network.stations[index].latitude
+    );
+    viewButton.setAttribute(
+      "data-longitude",
+      responseJson.network.stations[index].longitude
+    );
+    viewButton.innerText = "View Map";
+    div.appendChild(viewButton);
+    viewButton.addEventListener("click", clickViewMapDetail);
 
     let name = responseJson.network.stations[index].name;
     let emptySlots = responseJson.network.stations[index].empty_slots;
