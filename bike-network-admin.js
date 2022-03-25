@@ -1,8 +1,9 @@
-let currentNetwork;
-const BASE_URI = "http://api.citybik.es";
 //TODO - add error case
 //TODO - add tests
+let currentNetwork;
+const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
+
 listItem.addEventListener("change", function () {
   selection = this.value;
   console.log("clicked " + selection);
@@ -13,13 +14,13 @@ listItem.addEventListener("change", function () {
 });
 
 async function fetchNetworks() {
-  const response = await fetch(`${BASE_URI}/v2/networks`);
+  const response = await fetch(`${BIKE_BASE_URI}/v2/networks`);
   const networks = await response.json();
   return networks;
 }
 
 async function fetchNetworkDetails(route) {
-  const response = await fetch(`${BASE_URI}${route}`);
+  const response = await fetch(`${BIKE_BASE_URI}${route}`);
   const network = await response.json();
   return network;
 }
@@ -211,5 +212,13 @@ function generateNetworkDetailTable(responseJson) {
         }
       );
     }
+
+    //create method that checks if it's the view btn
+    networkDetailRow.addEventListener("mouseover", (event) => {
+      event.target.parentNode.classList.toggle("cell-highlight");
+    });
+    networkDetailRow.addEventListener("mouseout", (event) => {
+      event.target.parentNode.classList.toggle("cell-highlight");
+    });
   }
 }
