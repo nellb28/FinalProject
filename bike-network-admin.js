@@ -1,8 +1,11 @@
 let currentNetwork;
 const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
-//TODO - break this up into smaller files and import
 
+const temp = findLocalItems("RU.Moscow.velobike-moscow");
+console.log(temp);
+
+//TODO - break this up into smaller files and import
 //*************************Supporting classes************************ */
 class Location {
   constructor(city, country, latitude, longitude) {
@@ -20,6 +23,37 @@ class Network {
     this.name = name;
     this.location = Location;
   }
+}
+
+// "network": {
+//   ***DIFFERENT"company": [
+//       "ЗАО «СитиБайк»"
+//   ],
+//   "href": "/v2/networks/velobike-moscow",
+//   "id": "velobike-moscow",
+//   "location": {
+//       "city": "Moscow",
+//       "country": "RU",
+//       "latitude": 55.75,
+//       "longitude": 37.616667
+//   },
+//   "name": "Velobike",
+//   ******DIFFERENT"stations": [
+//       {
+//           "empty_slots": 12,
+//           "extra": {
+//               "address": "ст. м. Кропоткинская (выход к Гоголевскому бульвару)",
+//               "ebikes": 0,
+//               "electric_free": 0,
+//               "electric_slots": 0,
+//               "normal_bikes": 0,
+//               "normal_free": 12,
+//               "normal_slots": 12,
+//               "slots": 12,
+//               "uid": "0001"
+//           },
+class NetworkDetail {
+  constructor() {}
 }
 
 //************************* main ************************ */
@@ -44,7 +78,7 @@ let refreshInterval = setInterval(function () {
 }, 300000); //refresh data every 5 minutes
 
 function initialDataLoad() {
-  console.log(">>Loading initial data");
+  console.log(">> Loading initial data");
 
   fetchNetworks().then((responseJson) => {
     dataRefresh(responseJson);
@@ -52,12 +86,31 @@ function initialDataLoad() {
 }
 
 function dataRefresh(responseJson) {
-  console.log(">>dataRefresh");
+  console.log(">> dataRefresh");
   localStorage.clear();
-  localStorage.setItem("lastDataRefresh", generateDateTimeStamp());
+  localStorage.setItem("_lastDataRefresh", generateDateTimeStamp());
 
   //writeNetworkResponse
   writeNetworkResponse(responseJson);
+}
+
+//method was borrowed from https://gist.github.com/n0m4dz/77f08d3de1b9115e905c
+// returns an array of localStorage items in key/value pairs based on a query parameter
+// returns all localStorage items if query isn't specified
+// query can be a string or a RegExp object
+
+function findLocalItems(query) {
+  var i,
+    results = [];
+  for (i in localStorage) {
+    if (localStorage.hasOwnProperty(i)) {
+      if (i.match(query) || (!query && typeof i === "string")) {
+        value = JSON.parse(localStorage.getItem(i));
+        results.push({ key: i, val: value });
+      }
+    }
+  }
+  return results;
 }
 
 function writeNetworkResponse(responseJson) {
