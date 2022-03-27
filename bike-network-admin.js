@@ -1,6 +1,7 @@
 let currentNetwork;
 const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
+//TODO - break this up into smaller files and import
 
 // company: ['ЗАО «СитиБайк»']
 // href: "/v2/networks/velobike-moscow"
@@ -29,14 +30,6 @@ class Network {
 selection = "BR";
 
 //setup Initial Data
-const testLocation = new Location("chicago", "us", "12.1324", "43.4321");
-const testNetwork = new Network(
-  "company",
-  "www.google.com",
-  "1234",
-  testLocation,
-  "foo"
-);
 initialDataLoad();
 
 function generateDateTimeStamp() {
@@ -56,28 +49,39 @@ let refreshInterval = setInterval(function () {
 }, 300000); //refresh data every 5 minutes
 
 function initialDataLoad() {
-  console.log("Loading initial data");
-  fetchNetworks().then((networks) => {
-    console.log(networks); // fetched networks
-    dataRefresh();
-    //generateNetworkTable(selection, networks);
+  console.log(">>Loading initial data");
+  fetchNetworks().then((responseJson) => {
+    //console.log(networks); // fetched networks
+    dataRefresh(responseJson);
   });
 }
 
-function dataRefresh() {
+function dataRefresh(responseJson) {
+  console.log(">>dataRefresh");
   localStorage.clear();
   localStorage.setItem("lastDataRefresh", generateDateTimeStamp());
 
   //parseNetworkResponse
 
-  const id = testNetwork.id;
-  const country = testNetwork.location.country;
-  const city = testNetwork.location.city;
-  const networkKey = country + "." + city + "." + id;
-
   //writeNetworkResponse
-  console.log(`writing ${networkKey} + ${JSON.stringify(testNetwork)}`);
-  localStorage.setItem(networkKey, JSON.stringify(testNetwork));
+  for (
+    let index = 0;
+    index < Object.keys(responseJson.networks).length;
+    index++
+  ) {
+    const company = responseJson.networks[index].company;
+    const city = responseJson.networks[index].location.city;
+    const country = responseJson.networks[index].location.country;
+    const latitude = responseJson.networks[index].location.latitude;
+    const longitude = responseJson.networks[index].location.longitude;
+    const href = responseJson.networks[index].href;
+    const name = responseJson.networks[index].name;
+    const id = responseJson.networks[index].id;
+    const networkKey = country + "." + city + "." + id;
+    const actualLocation = new Location(city, country, latitude, longitude);
+    const actualNetwork = new Network(company, href, id, actualLocation, name);
+    localStorage.setItem(networkKey, JSON.stringify(actualNetwork));
+  }
 }
 
 listItem.addEventListener("change", function () {
@@ -91,7 +95,7 @@ function refreshData() {
 }
 
 async function fetchNetworks() {
-  console.log("fetchNetworks");
+  console.log(">>fetchNetworks");
   const response = await fetch(`${BIKE_BASE_URI}/v2/networks`);
   const networks = await response.json();
   return networks;
