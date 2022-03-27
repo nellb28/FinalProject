@@ -2,10 +2,41 @@ let currentNetwork;
 const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
 
+// company: ['ЗАО «СитиБайк»']
+// href: "/v2/networks/velobike-moscow"
+// id: "velobike-moscow"
+// location: {city: 'Moscow', country: 'RU', latitude: 55.75, longitude: 37.616667}
+// name: "Velobike"
+class Location {
+  constructor(city, country, latitude, longitude) {
+    this.city = city;
+    this.country = country;
+    this.latitude = latitude;
+    this.longitude = longitude;
+  }
+}
+class Network {
+  constructor(company, href, id, Location, name) {
+    this.id = id;
+    this.company = company;
+    this.href = href;
+    this.name = name;
+    this.location = Location;
+  }
+}
+
 //TODO - just adding this to remove exception. CLEAN ME UP!!!!
 selection = "BR";
 
 //setup Initial Data
+const testLocation = new Location("chicago", "us", "12.1324", "43.4321");
+const testNetwork = new Network(
+  "company",
+  "www.google.com",
+  "1234",
+  testLocation,
+  "foo"
+);
 initialDataLoad();
 
 function generateDateTimeStamp() {
@@ -32,9 +63,21 @@ function initialDataLoad() {
     //generateNetworkTable(selection, networks);
   });
 }
+
 function dataRefresh() {
   localStorage.clear();
   localStorage.setItem("lastDataRefresh", generateDateTimeStamp());
+
+  //parseNetworkResponse
+
+  const id = testNetwork.id;
+  const country = testNetwork.location.country;
+  const city = testNetwork.location.city;
+  const networkKey = country + "." + city + "." + id;
+
+  //writeNetworkResponse
+  console.log(`writing ${networkKey} + ${JSON.stringify(testNetwork)}`);
+  localStorage.setItem(networkKey, JSON.stringify(testNetwork));
 }
 
 listItem.addEventListener("change", function () {
@@ -48,20 +91,21 @@ function refreshData() {
 }
 
 async function fetchNetworks() {
-  console.log("refreshing data");
+  console.log("fetchNetworks");
   const response = await fetch(`${BIKE_BASE_URI}/v2/networks`);
   const networks = await response.json();
   return networks;
 }
 
 async function fetchNetworkDetails(route) {
+  console.log("fetchNetworkDetailsh");
   const response = await fetch(`${BIKE_BASE_URI}${route}`);
   const network = await response.json();
   return network;
 }
 
 function generateNetworkDetailTableHeader(responseJson) {
-  console.log("TEST");
+  console.log("generateNetworkDetailTableHeader");
   console.log(responseJson);
 
   const networkContainer = document.getElementById("networks-container");
