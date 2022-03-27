@@ -1,8 +1,11 @@
-//TODO - add error case
-//TODO - add tests
 let currentNetwork;
 const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
+
+// Change time remaining every 1 second
+let countdownInterval = setInterval(function () {
+  fetchNetworks();
+}, 300000);
 
 listItem.addEventListener("change", function () {
   selection = this.value;
@@ -13,7 +16,12 @@ listItem.addEventListener("change", function () {
   });
 });
 
+function refreshData() {
+  console.log("refreshing data");
+  fetchNetworks();
+}
 async function fetchNetworks() {
+  console.log("refreshing data");
   const response = await fetch(`${BIKE_BASE_URI}/v2/networks`);
   const networks = await response.json();
   return networks;
@@ -26,6 +34,9 @@ async function fetchNetworkDetails(route) {
 }
 
 function generateNetworkDetailTableHeader(responseJson) {
+  console.log("TEST");
+  console.log(responseJson);
+
   const networkContainer = document.getElementById("networks-container");
 
   if (document.getElementById("network-table")) {
