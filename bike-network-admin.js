@@ -4,8 +4,17 @@ const listItem = document.getElementById("country-select");
 
 //TODO - just adding this to remove exception. CLEAN ME UP!!!!
 selection = "BR";
+
 //setup Initial Data
 initialDataLoad();
+
+function generateDateTimeStamp() {
+  // Creation of the timestamp
+  const timestamp = Date.now();
+
+  // Convert timestamp to human readable date and time
+  return new Date(timestamp);
+}
 
 let refreshInterval = setInterval(function () {
   fetchNetworks().then((networks) => {
@@ -25,7 +34,7 @@ function initialDataLoad() {
 }
 function dataRefresh() {
   localStorage.clear();
-  localStorage.setItem("test", "12343");
+  localStorage.setItem("lastDataRefresh", generateDateTimeStamp());
 }
 
 listItem.addEventListener("change", function () {
