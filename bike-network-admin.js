@@ -3,6 +3,7 @@ const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
 //TODO - break this up into smaller files and import
 
+//*************************Supporting classes************************ */
 class Location {
   constructor(city, country, latitude, longitude) {
     this.city = city;
@@ -21,12 +22,11 @@ class Network {
   }
 }
 
-//TODO - just adding this to remove exception. CLEAN ME UP!!!!
-selection = "BR";
-
+//************************* main ************************ */
 //setup Initial Data
 initialDataLoad();
 
+//*************************Supporting functions************************ */
 function generateDateTimeStamp() {
   // Creation of the timestamp
   const timestamp = Date.now();
@@ -36,15 +36,16 @@ function generateDateTimeStamp() {
 }
 
 let refreshInterval = setInterval(function () {
-  fetchNetworks().then((networks) => {
-    console.log(networks); // fetched networks
-    dataRefresh();
+  fetchNetworks().then((responseJson) => {
+    console.log(responseJson); // fetched networks
+    dataRefresh(responseJson);
     //generateNetworkTable(selection, networks);
   });
 }, 300000); //refresh data every 5 minutes
 
 function initialDataLoad() {
   console.log(">>Loading initial data");
+
   fetchNetworks().then((responseJson) => {
     dataRefresh(responseJson);
   });
@@ -86,7 +87,7 @@ listItem.addEventListener("change", function () {
 });
 
 function refreshData() {
-  console.log("refreshing data");
+  console.log(">> refreshing data");
   fetchNetworks();
 }
 
@@ -194,46 +195,6 @@ const clickListItem = function (event) {
 
 function generateNetworkTable(selection, responseJson) {
   const networkTable = generateNetworkTableHeader();
-
-  // console.log("***********FILTERED******************");
-  // // var result = responseJson.filter((obj) => {
-  // //   obj.id == "velobike-moscow";
-  // // });
-  // console.log(responseData);
-  // //for (let index = 0; index < responseData.networks.length; index++) {
-  // // console.log(
-  // //   Object.values(responseData.networks.location).filter(
-  // //     (d) => d.country == selection
-  // //   )
-  // // );
-
-  // responseData.networks.forEach((element) =>
-  //   console.log(element.location.country.filter((d) => d.country == selection))
-  // );
-  // );
-  //}
-
-  // console.log(
-  //   Object.values(responseJson.networks).filter(
-  //     (d) => d.id == "baerum-bysykkel"
-  //   )
-  // );
-
-  // if (selection) {
-  //   console.log(
-  //     Object.values(responseData.networks[0].location.country).filter(
-  //       (d) => d.country == selection
-  //     )
-  //   );
-  // }
-
-  //.filter(d => d.gender === 'female')
-  //function (item) {
-  //return item; //.networks.id == "velobike-moscow";
-  // })
-  //);
-  // console.log(result); // "id": "velobike-moscow",
-  //console.log("***********FILTERED******************");
 
   const base = 310;
   for (let index = base; index < base + 20; index++) {
