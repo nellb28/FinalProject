@@ -2,24 +2,42 @@ let currentNetwork;
 const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
 
-// Change time remaining every 1 second
-let countdownInterval = setInterval(function () {
-  fetchNetworks();
-}, 300000);
+//TODO - just adding this to remove exception. CLEAN ME UP!!!!
+selection = "BR";
+//setup Initial Data
+initialDataLoad();
+
+let refreshInterval = setInterval(function () {
+  fetchNetworks().then((networks) => {
+    console.log(networks); // fetched networks
+    dataRefresh();
+    //generateNetworkTable(selection, networks);
+  });
+}, 300000); //refresh data every 5 minutes
+
+function initialDataLoad() {
+  console.log("Loading initial data");
+  fetchNetworks().then((networks) => {
+    console.log(networks); // fetched networks
+    dataRefresh();
+    //generateNetworkTable(selection, networks);
+  });
+}
+function dataRefresh() {
+  localStorage.clear();
+  localStorage.setItem("test", "12343");
+}
 
 listItem.addEventListener("change", function () {
   selection = this.value;
   console.log("clicked " + selection);
-  fetchNetworks().then((networks) => {
-    console.log(networks); // fetched networks
-    generateNetworkTable(selection, networks);
-  });
 });
 
 function refreshData() {
   console.log("refreshing data");
   fetchNetworks();
 }
+
 async function fetchNetworks() {
   console.log("refreshing data");
   const response = await fetch(`${BIKE_BASE_URI}/v2/networks`);
