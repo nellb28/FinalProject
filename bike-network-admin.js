@@ -2,9 +2,6 @@ let currentNetwork;
 const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
 
-const temp = findLocalItems("RU.Moscow.velobike-moscow");
-console.log(temp);
-
 //TODO - break this up into smaller files and import
 //*************************Supporting classes************************ */
 class Location {
@@ -24,6 +21,11 @@ class Network {
     this.location = Location;
   }
 }
+
+const localData = findLocalItems("RU.Moscow.velobike-moscow");
+console.log("local data");
+console.log(localData);
+generateNetworkTable("foo", localData);
 
 // "network": {
 //   ***DIFFERENT"company": [
@@ -61,13 +63,6 @@ class NetworkDetail {
 initialDataLoad();
 
 //*************************Supporting functions************************ */
-function generateDateTimeStamp() {
-  // Creation of the timestamp
-  const timestamp = Date.now();
-
-  // Convert timestamp to human readable date and time
-  return new Date(timestamp);
-}
 
 let refreshInterval = setInterval(function () {
   fetchNetworks().then((responseJson) => {
@@ -95,13 +90,14 @@ function dataRefresh(responseJson) {
 }
 
 //method was borrowed from https://gist.github.com/n0m4dz/77f08d3de1b9115e905c
-// returns an array of localStorage items in key/value pairs based on a query parameter
+// returns an array of localStorage items in f/value pairs based on a query parameter
 // returns all localStorage items if query isn't specified
 // query can be a string or a RegExp object
 
 function findLocalItems(query) {
   var i,
     results = [];
+
   for (i in localStorage) {
     if (localStorage.hasOwnProperty(i)) {
       if (i.match(query) || (!query && typeof i === "string")) {
@@ -156,6 +152,14 @@ async function fetchNetworkDetails(route) {
   const response = await fetch(`${BIKE_BASE_URI}${route}`);
   const network = await response.json();
   return network;
+}
+
+function generateDateTimeStamp() {
+  // Creation of the timestamp
+  const timestamp = Date.now();
+
+  // Convert timestamp to human readable date and time
+  return new Date(timestamp);
 }
 
 function generateNetworkDetailTableHeader(responseJson) {
@@ -249,12 +253,20 @@ const clickListItem = function (event) {
 function generateNetworkTable(selection, responseJson) {
   const networkTable = generateNetworkTableHeader();
 
-  const base = 310;
-  for (let index = base; index < base + 20; index++) {
-    let company = responseJson.networks[index].company;
-    let city = responseJson.networks[index].location.city;
-    let country = responseJson.networks[index].location.country;
-    let network = responseJson.networks[index].href;
+  // console.log(Object.keys(localData).length);
+  for (let index = 0; index < localData.length; index++) {
+    console.log("here");
+    const obj = localData[index];
+    responseJson = Object.values(obj)[1];
+
+    // Object.values(obj).forEach((val) => {
+    //const responseJson = val;
+    console.log("value " + responseJson.company);
+    let company = responseJson.company;
+    let href = responseJson.href;
+    let country = responseJson.country;
+    let city = responseJson.city;
+    console.log(country);
 
     const networkRow = document.createElement("tr");
     networkTable.appendChild(networkRow);
@@ -272,7 +284,7 @@ function generateNetworkTable(selection, responseJson) {
     //todo extract into function
     const viewButton = document.createElement("a");
     viewButton.setAttribute("class", "view-item");
-    viewButton.setAttribute("data-network", network);
+    viewButton.setAttribute("data-network", href);
     viewButton.innerText = "View";
     div.appendChild(viewButton);
     viewButton.addEventListener("click", clickViewNetworkDetail);
@@ -288,8 +300,46 @@ function generateNetworkTable(selection, responseJson) {
     networkTD1.innerHTML = " " + company;
     networkTD2.innerHTML = " " + country;
     networkTD3.innerHTML = " " + city;
+    // });
   }
 }
+//const base = 310;
+//for (let index = base; index < base + 20; index++) {
+
+//     const networkRow = document.createElement("tr");
+//     networkTable.appendChild(networkRow);
+//     const networkTD1 = document.createElement("td");
+//     networkRow.appendChild(networkTD1);
+//     const networkTD2 = document.createElement("td");
+//     networkRow.appendChild(networkTD2);
+//     const networkTD3 = document.createElement("td");
+//     networkRow.appendChild(networkTD3);
+//     const networkTD4 = document.createElement("td");
+//     networkRow.appendChild(networkTD4);
+//     const div = document.createElement("div");
+//     networkTD4.appendChild(div);
+
+//     //todo extract into function
+//     const viewButton = document.createElement("a");
+//     viewButton.setAttribute("class", "view-item");
+//     viewButton.setAttribute("data-network", network);
+//     viewButton.innerText = "View";
+//     div.appendChild(viewButton);
+//     viewButton.addEventListener("click", clickViewNetworkDetail);
+
+//     //create method that checks if it's the view btn
+//     networkRow.addEventListener("mouseover", (event) => {
+//       event.target.parentNode.classList.toggle("cell-highlight");
+//     });
+//     networkRow.addEventListener("mouseout", (event) => {
+//       event.target.parentNode.classList.toggle("cell-highlight");
+//     });
+
+//     networkTD1.innerHTML = " " + company;
+//     networkTD2.innerHTML = " " + country;
+//     networkTD3.innerHTML = " " + city;
+//   }
+// }
 
 function generateNetworkDetailTable(responseJson) {
   console.log("generateNetworkDetailTable");
