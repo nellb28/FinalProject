@@ -3,11 +3,6 @@ const BIKE_BASE_URI = "http://api.citybik.es";
 const listItem = document.getElementById("country-select");
 //TODO - break this up into smaller files and import
 
-// company: ['ЗАО «СитиБайк»']
-// href: "/v2/networks/velobike-moscow"
-// id: "velobike-moscow"
-// location: {city: 'Moscow', country: 'RU', latitude: 55.75, longitude: 37.616667}
-// name: "Velobike"
 class Location {
   constructor(city, country, latitude, longitude) {
     this.city = city;
@@ -51,7 +46,6 @@ let refreshInterval = setInterval(function () {
 function initialDataLoad() {
   console.log(">>Loading initial data");
   fetchNetworks().then((responseJson) => {
-    //console.log(networks); // fetched networks
     dataRefresh(responseJson);
   });
 }
@@ -61,9 +55,11 @@ function dataRefresh(responseJson) {
   localStorage.clear();
   localStorage.setItem("lastDataRefresh", generateDateTimeStamp());
 
-  //parseNetworkResponse
-
   //writeNetworkResponse
+  writeNetworkResponse(responseJson);
+}
+
+function writeNetworkResponse(responseJson) {
   for (
     let index = 0;
     index < Object.keys(responseJson.networks).length;
