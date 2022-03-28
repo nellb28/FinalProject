@@ -76,6 +76,26 @@ function initialDataLoad() {
   fetchNetworks().then((responseJson) => {
     dataRefresh(responseJson);
   });
+
+  updateDropDown();
+}
+
+function updateDropDown() {
+  let arrayOfCountryAbbreviations = [];
+  for (var key in localStorage) {
+    if (key.includes(".")) {
+      const splitKey = key.split(".");
+      let countrAbbreviation = splitKey[0];
+      arrayOfCountryAbbreviations.push(countrAbbreviation);
+    }
+  }
+  let uniqueChars = [...new Set(arrayOfCountryAbbreviations)];
+  console.log(uniqueChars);
+
+  uniqueChars.forEach((abbreviation) => {
+    var option = new Option(abbreviation, abbreviation);
+    listItem.appendChild(option);
+  });
 }
 
 function dataRefresh(responseJson) {
