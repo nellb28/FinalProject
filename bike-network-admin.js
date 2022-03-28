@@ -22,7 +22,8 @@ class Network {
   }
 }
 
-const localData = findLocalItems("RU.Moscow.velobike-moscow");
+const localData = findLocalItems("^ES.");
+//const localData = findLocalItems("^.*");
 console.log("local data");
 console.log(localData);
 generateNetworkTable("foo", localData);
