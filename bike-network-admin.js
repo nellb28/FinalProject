@@ -22,11 +22,7 @@ class Network {
   }
 }
 
-const localData = findLocalItems("^ES.");
-//const localData = findLocalItems("^.*");
-console.log("local data");
-console.log(localData);
-generateNetworkTable("foo", localData);
+generateNetworkTable(getLocalData());
 
 // "network": {
 //   ***DIFFERENT"company": [
@@ -65,11 +61,10 @@ initialDataLoad();
 
 //*************************Supporting functions************************ */
 
-let refreshInterval = setInterval(function () {
+let refreshDataInterval = setInterval(function () {
   fetchNetworks().then((responseJson) => {
     console.log(responseJson); // fetched networks
     dataRefresh(responseJson);
-    //generateNetworkTable(selection, networks);
   });
 }, 300000); //refresh data every 5 minutes
 
@@ -96,7 +91,7 @@ function dataRefresh(responseJson) {
 // query can be a string or a RegExp object
 
 function findLocalItems(query) {
-  var i,
+  let i,
     results = [];
 
   for (i in localStorage) {
@@ -133,7 +128,8 @@ function writeNetworkResponse(responseJson) {
 
 listItem.addEventListener("change", function () {
   selection = this.value;
-  console.log("clicked " + selection);
+  localStorage.setItem("_countrySelection", selection);
+  generateNetworkTable(getLocalData());
 });
 
 function refreshData() {
@@ -142,7 +138,7 @@ function refreshData() {
 }
 
 async function fetchNetworks() {
-  console.log(">>fetchNetworks");
+  console.log(">> fetchNetworks");
   const response = await fetch(`${BIKE_BASE_URI}/v2/networks`);
   const networks = await response.json();
   return networks;
@@ -251,7 +247,20 @@ const clickListItem = function (event) {
   event.target.parentNode.classList.toggle("done");
 };
 
-function generateNetworkTable(selection, responseJson) {
+function getLocalData() {
+  let localData = "";
+  const countrySelection = localStorage.getItem("_countrySelection");
+
+  if (!countrySelection) {
+    localData = findLocalItems("[A-Z][A-Z].*");
+  } else {
+    localData = findLocalItems("^[" + countrySelection + "].*");
+  }
+
+  return localData;
+}
+
+function generateNetworkTable(localData) {
   const networkTable = generateNetworkTableHeader();
 
   // console.log(Object.keys(localData).length);
