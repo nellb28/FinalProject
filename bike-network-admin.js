@@ -71,6 +71,8 @@ let refreshDataInterval = setInterval(function () {
 function initialDataLoad() {
   console.log(">> Loading initial data");
 
+  localStorage.setItem("_countrySelection", "ALL");
+
   fetchNetworks().then((responseJson) => {
     dataRefresh(responseJson);
   });
@@ -128,6 +130,10 @@ function writeNetworkResponse(responseJson) {
 
 listItem.addEventListener("change", function () {
   selection = this.value;
+  if (selection.length != 2) {
+    selection = "ALL";
+  }
+
   localStorage.setItem("_countrySelection", selection);
   generateNetworkTable(getLocalData());
 });
@@ -250,8 +256,8 @@ const clickListItem = function (event) {
 function getLocalData() {
   let localData = "";
   const countrySelection = localStorage.getItem("_countrySelection");
-
-  if (!countrySelection) {
+  console.log(countrySelection);
+  if (!countrySelection || countrySelection === "ALL") {
     localData = findLocalItems("[A-Z][A-Z].*");
   } else {
     localData = findLocalItems("^[" + countrySelection + "].*");
@@ -265,18 +271,13 @@ function generateNetworkTable(localData) {
 
   // console.log(Object.keys(localData).length);
   for (let index = 0; index < localData.length; index++) {
-    console.log("here");
     const obj = localData[index];
     responseJson = Object.values(obj)[1];
 
-    // Object.values(obj).forEach((val) => {
-    //const responseJson = val;
-    console.log("value " + responseJson.company);
     let company = responseJson.company;
     let href = responseJson.href;
     let country = responseJson.location.country;
     let city = responseJson.location.city;
-    console.log(country);
 
     const networkRow = document.createElement("tr");
     networkTable.appendChild(networkRow);
@@ -291,7 +292,7 @@ function generateNetworkTable(localData) {
     const div = document.createElement("div");
     networkTD4.appendChild(div);
 
-    //todo extract into function
+    //TODO extract into function
     const viewButton = document.createElement("a");
     viewButton.setAttribute("class", "view-item");
     viewButton.setAttribute("data-network", href);
@@ -313,48 +314,9 @@ function generateNetworkTable(localData) {
     // });
   }
 }
-//const base = 310;
-//for (let index = base; index < base + 20; index++) {
-
-//     const networkRow = document.createElement("tr");
-//     networkTable.appendChild(networkRow);
-//     const networkTD1 = document.createElement("td");
-//     networkRow.appendChild(networkTD1);
-//     const networkTD2 = document.createElement("td");
-//     networkRow.appendChild(networkTD2);
-//     const networkTD3 = document.createElement("td");
-//     networkRow.appendChild(networkTD3);
-//     const networkTD4 = document.createElement("td");
-//     networkRow.appendChild(networkTD4);
-//     const div = document.createElement("div");
-//     networkTD4.appendChild(div);
-
-//     //todo extract into function
-//     const viewButton = document.createElement("a");
-//     viewButton.setAttribute("class", "view-item");
-//     viewButton.setAttribute("data-network", network);
-//     viewButton.innerText = "View";
-//     div.appendChild(viewButton);
-//     viewButton.addEventListener("click", clickViewNetworkDetail);
-
-//     //create method that checks if it's the view btn
-//     networkRow.addEventListener("mouseover", (event) => {
-//       event.target.parentNode.classList.toggle("cell-highlight");
-//     });
-//     networkRow.addEventListener("mouseout", (event) => {
-//       event.target.parentNode.classList.toggle("cell-highlight");
-//     });
-
-//     networkTD1.innerHTML = " " + company;
-//     networkTD2.innerHTML = " " + country;
-//     networkTD3.innerHTML = " " + city;
-//   }
-// }
 
 function generateNetworkDetailTable(responseJson) {
-  console.log("generateNetworkDetailTable");
-  console.log("HERE****");
-  console.log(responseJson);
+  console.log(">> generateNetworkDetailTable");
   const networkSectionTable = generateNetworkDetailTableHeader(responseJson);
   for (let index = 0; index < responseJson.network.stations.length; index++) {
     const networkDetailRow = document.createElement("tr");
