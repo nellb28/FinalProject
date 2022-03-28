@@ -264,8 +264,8 @@ function generateNetworkTable(selection, responseJson) {
     console.log("value " + responseJson.company);
     let company = responseJson.company;
     let href = responseJson.href;
-    let country = responseJson.country;
-    let city = responseJson.city;
+    let country = responseJson.location.country;
+    let city = responseJson.location.city;
     console.log(country);
 
     const networkRow = document.createElement("tr");
