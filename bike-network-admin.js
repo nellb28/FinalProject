@@ -280,7 +280,7 @@ function getLocalData() {
   if (!countrySelection || countrySelection === "ALL") {
     localData = findLocalItems("[A-Z][A-Z].*");
   } else {
-    localData = findLocalItems("^[" + countrySelection + "].*");
+    localData = findLocalItems("^[" + countrySelection + "]{2}");
   }
 
   return localData;
